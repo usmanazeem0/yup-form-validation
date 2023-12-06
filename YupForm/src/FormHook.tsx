@@ -11,7 +11,9 @@ const schema = yup.object().shape({
     twitter: yup.string().required("enter twitter profile"),
     facebook: yup.string().required("enter facebook profile"),
   }),
-  phoneNumbers: yup.array(),
+
+  age: yup.number().required("please enter age"),
+  dob: yup.date().required("please enter date of birth"),
 });
 
 type FormValues = {
@@ -22,7 +24,8 @@ type FormValues = {
     twitter: string;
     facebook: string;
   };
-  phoneNumber: string[];
+  age: number;
+  dob: Date;
 };
 
 const FormHook = () => {
@@ -35,11 +38,12 @@ const FormHook = () => {
         twitter: "",
         facebook: "",
       },
-      phoneNumber: ["", ""],
+      age: 0,
+      dob: new Date(),
     },
     resolver: yupResolver(schema),
   });
-  const { register, control, handleSubmit, formState } = form;
+  const { register, control, handleSubmit, formState, reset } = form;
   const { errors } = formState;
   const OnSubmit = (data: FormValues) => {
     console.log("submit form", data);
@@ -85,23 +89,30 @@ const FormHook = () => {
           <p className="error">{errors.social?.facebook?.message} </p>
         </div>
 
-        {/* for primary phone number */}
+        {/* for  age */}
 
         <div className="form-control">
-          <label htmlFor="primary">Primary Phone Number</label>
-          <input type="text" id="primary" {...register("phoneNumber.0")} />
-          <p className="error">{errors.phoneNumber?.[0]?.message} </p>
+          <label htmlFor="age">Age</label>
+          <input type="number" id="age" {...register("age")} />
+          <p className="error">{errors.age?.message} </p>
         </div>
 
-        {/* for secondary phone number 2nd index if array */}
+        {/* for date of birth */}
 
         <div className="form-control">
-          <label htmlFor="secondary">Secondary Phone Number</label>
-          <input type="text" id="secondary" {...register("phoneNumber.1")} />
-          <p className="error">{errors.phoneNumber?.[1]?.message} </p>
+          <label htmlFor="dob">Date of Birth</label>
+          <input type="date" id="dob" {...register("dob")} />
+          <p className="error">{errors.dob?.message} </p>
         </div>
 
+        {/* form submit button */}
         <button type="submit">Submit</button>
+
+        {/* reset form value */}
+
+        <button type="button" onClick={() => reset()}>
+          Reset
+        </button>
       </form>
       <DevTool control={control} />
     </>
